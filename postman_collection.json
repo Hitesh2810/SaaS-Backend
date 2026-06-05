@@ -1,0 +1,46 @@
+{
+  "info": {
+    "name": "Multi-Tenant SaaS Admin API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {"key": "base_url", "value": "http://127.0.0.1:8000/api"},
+    {"key": "access_token", "value": ""},
+    {"key": "refresh_token", "value": ""},
+    {"key": "tenant_id", "value": ""},
+    {"key": "user_id", "value": ""},
+    {"key": "subscription_id", "value": ""},
+    {"key": "payment_id", "value": ""},
+    {"key": "notification_id", "value": ""}
+  ],
+  "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}", "type": "string"}]},
+  "item": [
+    {"name": "Register", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "url": "{{base_url}}/auth/register/", "body": {"mode": "raw", "raw": "{\"username\":\"user\",\"email\":\"user@example.com\",\"password\":\"StrongPass123!\",\"first_name\":\"Demo\",\"last_name\":\"User\",\"role\":\"USER\"}"}}},
+    {"name": "Login", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "url": "{{base_url}}/auth/login/", "body": {"mode": "raw", "raw": "{\"email\":\"admin@example.com\",\"password\":\"StrongPass123!\"}"}}},
+    {"name": "Refresh Token", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "url": "{{base_url}}/auth/token/refresh/", "body": {"mode": "raw", "raw": "{\"refresh\":\"{{refresh_token}}\"}"}}},
+    {"name": "Logout", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "url": "{{base_url}}/auth/logout/", "body": {"mode": "raw", "raw": "{\"refresh\":\"{{refresh_token}}\"}"}}},
+    {"name": "Current User", "request": {"method": "GET", "url": "{{base_url}}/auth/me/"}},
+    {"name": "Change Password", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "url": "{{base_url}}/auth/change-password/", "body": {"mode": "raw", "raw": "{\"old_password\":\"StrongPass123!\",\"new_password\":\"StrongerPass123!\"}"}}},
+    {"name": "Create Tenant", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "url": "{{base_url}}/tenants/", "body": {"mode": "raw", "raw": "{\"name\":\"Acme Inc\",\"domain\":\"acme.example.com\",\"contact_email\":\"ops@acme.example.com\",\"contact_phone\":\"+15550000000\",\"status\":\"ACTIVE\"}"}}},
+    {"name": "List Tenants", "request": {"method": "GET", "url": "{{base_url}}/tenants/"}},
+    {"name": "Tenant Details", "request": {"method": "GET", "url": "{{base_url}}/tenants/{{tenant_id}}/"}},
+    {"name": "Update Tenant", "request": {"method": "PATCH", "header": [{"key": "Content-Type", "value": "application/json"}], "url": "{{base_url}}/tenants/{{tenant_id}}/", "body": {"mode": "raw", "raw": "{\"status\":\"ACTIVE\"}"}}},
+    {"name": "Delete Tenant", "request": {"method": "DELETE", "url": "{{base_url}}/tenants/{{tenant_id}}/"}},
+    {"name": "Create User", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "url": "{{base_url}}/users/", "body": {"mode": "raw", "raw": "{\"username\":\"tenantadmin\",\"email\":\"tenantadmin@example.com\",\"password\":\"StrongPass123!\",\"role\":\"TENANT_ADMIN\",\"tenant\":\"{{tenant_id}}\"}"}}},
+    {"name": "List Users", "request": {"method": "GET", "url": "{{base_url}}/users/?tenant={{tenant_id}}&role=TENANT_ADMIN&is_active=true"}},
+    {"name": "Assign Role", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "url": "{{base_url}}/users/{{user_id}}/assign-role/", "body": {"mode": "raw", "raw": "{\"role\":\"USER\"}"}}},
+    {"name": "Create Subscription", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "url": "{{base_url}}/subscriptions/", "body": {"mode": "raw", "raw": "{\"tenant\":\"{{tenant_id}}\",\"plan_name\":\"Pro\",\"price\":\"99.00\",\"billing_cycle\":\"MONTHLY\",\"start_date\":\"2026-06-01\",\"end_date\":\"2026-07-01\",\"status\":\"ACTIVE\"}"}}},
+    {"name": "Renew Subscription", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "url": "{{base_url}}/subscriptions/{{subscription_id}}/renew/", "body": {"mode": "raw", "raw": "{\"end_date\":\"2026-08-01\",\"price\":\"99.00\"}"}}},
+    {"name": "Cancel Subscription", "request": {"method": "POST", "url": "{{base_url}}/subscriptions/{{subscription_id}}/cancel/"}},
+    {"name": "Subscription History", "request": {"method": "GET", "url": "{{base_url}}/subscriptions/history/"}},
+    {"name": "Create Payment", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "url": "{{base_url}}/payments/", "body": {"mode": "raw", "raw": "{\"subscription\":\"{{subscription_id}}\",\"amount\":\"99.00\",\"payment_method\":\"CARD\",\"transaction_id\":\"txn_001\",\"status\":\"PAID\",\"payment_date\":\"2026-06-01T10:00:00Z\"}"}}},
+    {"name": "Payment History", "request": {"method": "GET", "url": "{{base_url}}/payments/history/"}},
+    {"name": "Payment Details", "request": {"method": "GET", "url": "{{base_url}}/payments/{{payment_id}}/"}},
+    {"name": "Dashboard Analytics", "request": {"method": "GET", "url": "{{base_url}}/analytics/dashboard/"}},
+    {"name": "Send Notification", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "url": "{{base_url}}/notifications/", "body": {"mode": "raw", "raw": "{\"title\":\"Welcome\",\"message\":\"Your account is ready.\",\"recipient\":\"{{user_id}}\"}"}}},
+    {"name": "List Notifications", "request": {"method": "GET", "url": "{{base_url}}/notifications/"}},
+    {"name": "Mark Notification As Read", "request": {"method": "POST", "url": "{{base_url}}/notifications/{{notification_id}}/mark-as-read/"}},
+    {"name": "Create Setting", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "url": "{{base_url}}/settings/", "body": {"mode": "raw", "raw": "{\"category\":\"APPLICATION\",\"key\":\"app_name\",\"value\":{\"name\":\"SaaS Admin\"},\"is_secret\":false}"}}},
+    {"name": "List Settings", "request": {"method": "GET", "url": "{{base_url}}/settings/"}}
+  ]
+}
